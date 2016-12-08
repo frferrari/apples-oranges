@@ -1,6 +1,8 @@
 Homework shop checkout (apples and oranges)
 ===========================================
 
+You will need Play framework for Scala to run this project (version 2.2 or greater)
+
 You can run the test using
 
 ./activator test
