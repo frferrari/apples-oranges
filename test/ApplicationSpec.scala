@@ -19,8 +19,16 @@ class ApplicationSpec extends PlaySpec with OneServerPerSuite with HtmlUnitFacto
       await(Products.computeTotalPrice(List("Apple"))) mustEqual(BigDecimal(0.60))
     }
 
-    "return 1.20 for two Apples" in {
-      await(Products.computeTotalPrice(List("Apple", "Apple"))) mustEqual(BigDecimal(1.20))
+    "return 0.60 for two Apples (special offer)" in {
+      await(Products.computeTotalPrice(List("Apple", "Apple"))) mustEqual(BigDecimal(0.60))
+    }
+
+    "return 1.20 for four Apples (special offer)" in {
+      await(Products.computeTotalPrice(List("Apple", "Apple", "Apple", "Apple"))) mustEqual(BigDecimal(1.20))
+    }
+
+    "return 1.80 for five Apples (special offer)" in {
+      await(Products.computeTotalPrice(List("Apple", "Apple", "Apple", "Apple", "Apple"))) mustEqual(BigDecimal(1.80))
     }
 
     "return 0.25 for one Orange" in {
@@ -31,6 +39,14 @@ class ApplicationSpec extends PlaySpec with OneServerPerSuite with HtmlUnitFacto
       await(Products.computeTotalPrice(List("Orange", "Orange"))) mustEqual(BigDecimal(0.50))
     }
 
+    "return 0.50 for three Oranges (special offer)" in {
+      await(Products.computeTotalPrice(List("Orange", "Orange", "Orange"))) mustEqual(BigDecimal(0.50))
+    }
+
+    "return 1.00 for six Oranges and some unknown products (special offer)" in {
+      await(Products.computeTotalPrice(List("Orange", "Orange", "Kiwi", "Orange", "Grape", "Orange", "Orange", "Kiwi"))) mustEqual(BigDecimal(1.00))
+    }
+
     "return 0.85 for one Apple and one Orange" in {
       await(Products.computeTotalPrice(List("Apple", "Orange"))) mustEqual(BigDecimal(0.85))
     }
@@ -39,12 +55,12 @@ class ApplicationSpec extends PlaySpec with OneServerPerSuite with HtmlUnitFacto
       await(Products.computeTotalPrice(List("Orange", "Apple", "Orange"))) mustEqual(BigDecimal(1.10))
     }
 
-    "return 1.70 for two Apples and two Oranges" in {
-      await(Products.computeTotalPrice(List("Orange", "Apple", "Orange", "Apple"))) mustEqual(BigDecimal(1.70))
+    "return 1.10 for two Apples and two Oranges (special offer)" in {
+      await(Products.computeTotalPrice(List("Orange", "Apple", "Orange", "Apple"))) mustEqual(BigDecimal(1.10))
     }
 
-    "return 1.70 for two Apples and two Oranges and some unknown products" in {
-      await(Products.computeTotalPrice(List("Kiwi", "Orange", "Apple", "Grapes", "Orange", "Apple", "Kiwi"))) mustEqual(BigDecimal(1.70))
+    "return 1.10 for two Apples and two Oranges and some unknown products" in {
+      await(Products.computeTotalPrice(List("Kiwi", "Orange", "Apple", "Grapes", "Orange", "Apple", "Kiwi"))) mustEqual(BigDecimal(1.10))
     }
   }
 

@@ -34,7 +34,7 @@ class IntegrationSpec extends PlaySpec with OneServerPerSuite with HtmlUnitFacto
       (jsonResult \ "total").as[BigDecimal] mustEqual(BigDecimal(0.0))
     }
 
-    "compute the total price for 1 Apple and 1 Orange" in {
+    "return 0.85 for 1 Apple and 1 Orange" in {
       val request = FakeRequest("GET", "/checkout").withJsonBody(Json.parse(
         s"""[ "Apple", "Orange" ]""".stripMargin))
       val postResult = call(shopController.checkout, request)
@@ -44,14 +44,24 @@ class IntegrationSpec extends PlaySpec with OneServerPerSuite with HtmlUnitFacto
       (jsonResult \ "total").as[BigDecimal] mustEqual(BigDecimal(0.85))
     }
 
-    "compute the total price for 2 Apples and 1 Orange and 1 unknown product" in {
+    "return 0.85 for 2 Apples and 1 Orange and 1 unknown product" in {
       val request = FakeRequest("GET", "/checkout").withJsonBody(Json.parse(
         s"""[ "Orange", "Apple", "Kiwi", "Apple" ]""".stripMargin))
       val postResult = call(shopController.checkout, request)
       val jsonResult = contentAsJson(postResult)
 
       status(postResult) mustEqual OK
-      (jsonResult \ "total").as[BigDecimal] mustEqual(BigDecimal(1.45))
+      (jsonResult \ "total").as[BigDecimal] mustEqual(BigDecimal(0.85))
+    }
+
+    "return 1.60 for 2 Apples and 6 Oranges and some unknown products" in {
+      val request = FakeRequest("GET", "/checkout").withJsonBody(Json.parse(
+        s"""[ "Kiwi", "Orange", "Apple", "Orange", "Kiwi", "Orange", "Apple", "Orange", "Kiwi", "Orange", "Orange" ]""".stripMargin))
+      val postResult = call(shopController.checkout, request)
+      val jsonResult = contentAsJson(postResult)
+
+      status(postResult) mustEqual OK
+      (jsonResult \ "total").as[BigDecimal] mustEqual(BigDecimal(1.60))
     }
   }
 
